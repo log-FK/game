@@ -1,8 +1,8 @@
-from modules.window import main_window
+from modules.window import window
 from modules.app import app
 def main():
     try:
-        main_window.show()
+        window.show()
         app.exec()
     except Exception as eror:
         print(eror)

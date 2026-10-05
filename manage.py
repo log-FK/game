@@ -1,5 +1,5 @@
-from modules.window import window
 from modules.app import app
+from modules.window import window
 def main():
     try:
         window.show()

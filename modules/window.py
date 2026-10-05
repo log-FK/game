@@ -1,78 +1,76 @@
-from PyQt6.QtWidgets import QtWidgets
-from PyQt6.QtWidgets import QMainWindow, QtWidgets, QFrame, QHBoxLayout,QVBoxLayout,QGridLayout, QLabel
-from PyQt6.QtCore import QSize
-from app import app
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QLabel
+from .app import app
 
-main_window = QMainWindow
+window = QWidget()
 
-primary_screen = app.primaryScreen()
-screen_size = primary_screen.Size()
+screen_size = app.primaryScreen().size()
+width = screen_size.width()
+height = screen_size.height()
 
-app.primaryScreen()
-screen_size = primary_screen.size()
+window.setGeometry(100, 100, width - 200, height - 200)
 
-width_screen = screen_size.Width()
-height_screen = screen_size.Height()
+# Окно: чёрный фрейм на всё окно
+main_layout = QHBoxLayout(window)
+main_layout.setContentsMargins(0, 0, 0, 0)
 
-main_window = QMainWindow()
-main_window.setGeometry(100, 100, 1024, 800)
+main_frame = QFrame()
+main_frame.setStyleSheet("background-color: black")
+main_layout.addWidget(main_frame)
 
+frame_layout = QVBoxLayout(main_frame)
+frame_layout.setContentsMargins(10, 10, 10, 10)
+frame_layout.setSpacing(10)
 
+# --- Заголовок (сам займёт всё свободное место по высоте) ---
+title_label = QLabel("SPACE CONTROL")
+title_label.setStyleSheet("color: white; font-size: 28px;")
+frame_layout.addWidget(title_label)
 
-main_frame = QFrame(parent= main_window)
-main_frame.setStyleSheet("background-color:black")
-main_frame.setFixedSize(100, 100)
-
-
-main_layout = QHBoxLayout()
-
-frame_layout = QVBoxLayout()
- 
+# --- Серый блок слева + распорка справа ---
 middle_layout = QHBoxLayout()
 
-
-
-system_status_frame = QFrame(parent= main_frame)
+system_status_frame = QFrame()
 system_status_frame.setStyleSheet("background-color: gray")
-system_status_frame.setFixedSize(500,300)
+system_status_frame.setFixedSize(500, 300)
 
-status_layout = QVBoxLayout()
-status_label = QLabel(parent= main_frame, text= "online")
-status_label.setStyleSheet("font-size: 17px, font-weight: 700, color: white")
-
-
-
-# system_status_frame.setLayout(status_layout)
-
-status_layout.addWidget(status_label)
-system_status_frame.setLayout(status_layout)
+# без layout: label остаётся в левом верхнем углу
+status_label = QLabel("SYSTEM ONLINE", parent=system_status_frame)
+status_label.setStyleSheet("color: white; font-size: 22px;")
 
 middle_layout.addWidget(system_status_frame)
+middle_layout.addWidget(QFrame())  # распорка
 
 frame_layout.addLayout(middle_layout)
 
-bottom_grid = QGridLayout()
+# --- Цветные квадраты: распорки между ними растягиваются поровну ---
+def make_square(color):
+    square = QFrame()
+    square.setFixedSize(100, 100)
+    square.setStyleSheet(f"background-color: {color}")
+    return square
 
+squares_layout = QHBoxLayout()
+squares_layout.addWidget(QFrame())
+squares_layout.addWidget(make_square("red"))
+squares_layout.addWidget(QFrame())
+squares_layout.addWidget(make_square("blue"))
+squares_layout.addWidget(QFrame())
+squares_layout.addWidget(make_square("green"))
+squares_layout.addWidget(QFrame())
 
+frame_layout.addLayout(squares_layout)
 
+# --- Белая полоса слева + распорка справа ---
+bottom_layout = QHBoxLayout()
 
-left_square_1 = QFrame(parent= main_frame)
-left_square_1.setFixedSize(100, 100)
-left_square_1.setStyleSheet("background-color: red")
+bottom_frame = QFrame()
+bottom_frame.setStyleSheet("background-color: white")
+bottom_frame.setFixedSize(500, 80)
 
-middle_square_2 = QFrame(parent= main_frame)
-middle_square_2.setFixedSize(100, 100)
-middle_square_2.setStyleSheet("background-color: blue")
+bottom_text_label = QLabel("ENGINE        RADAR        NAVIGATION", parent=bottom_frame)
+bottom_text_label.setStyleSheet("color: black; font-size: 22px;")   
 
+bottom_layout.addWidget(bottom_frame)
+bottom_layout.addWidget(QFrame())  # распорка
 
-right_square_3 = QFrame(parent= main_frame)
-right_square_3.setFixedSize(100, 100)
-right_square_3.setStyleSheet("background-color: green")
-
-# bottom_layout.addWidget(left_square_1)
-# middle_layout.addWidget(middle_square_2)
-# right_layout.addWidget(right_square_3)
-
-
-
-    
+frame_layout.addLayout(bottom_layout)

@@ -1,76 +1,77 @@
-from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QFrame, QLabel, QHBoxLayout, QVBoxLayout, QGridLayout
 from .app import app
 
 window = QWidget()
 
-screen_size = app.primaryScreen().size()
-width = screen_size.width()
-height = screen_size.height()
+size = app.primaryScreen().size()
+window.setGeometry(100, 100, size.width() - 200, size.height() - 200)
 
-window.setGeometry(100, 100, width - 200, height - 200)
-
-# Окно: чёрный фрейм на всё окно
 main_layout = QHBoxLayout(window)
-main_layout.setContentsMargins(0, 0, 0, 0)
 
-main_frame = QFrame()
-main_frame.setStyleSheet("background-color: black")
-main_layout.addWidget(main_frame)
+bg = QFrame()
+bg.setStyleSheet("background-color: black")
+main_layout.addWidget(bg)
 
-frame_layout = QVBoxLayout(main_frame)
-frame_layout.setContentsMargins(10, 10, 10, 10)
-frame_layout.setSpacing(10)
+layout = QVBoxLayout(bg)
+layout.setContentsMargins(10, 10, 10, 10)
+layout.setSpacing(10)
 
-# --- Заголовок (сам займёт всё свободное место по высоте) ---
-title_label = QLabel("SPACE CONTROL")
-title_label.setStyleSheet("color: white; font-size: 28px;")
-frame_layout.addWidget(title_label)
+title = QLabel("SPACE CONTROL")
+title.setStyleSheet("color: white; font-size: 28px;")
+layout.addWidget(title)
 
-# --- Серый блок слева + распорка справа ---
-middle_layout = QHBoxLayout()
-
-system_status_frame = QFrame()
-system_status_frame.setStyleSheet("background-color: gray")
-system_status_frame.setFixedSize(500, 300)
-
-# без layout: label остаётся в левом верхнем углу
-status_label = QLabel("SYSTEM ONLINE", parent=system_status_frame)
+# статус
+row1 = QHBoxLayout()
+status = QFrame()
+status.setFixedSize(500, 300)
+status.setStyleSheet("background-color: gray")
+status_label = QLabel("SYSTEM ONLINE", parent=status)
 status_label.setStyleSheet("color: white; font-size: 22px;")
+row1.addWidget(status)
+row1.addWidget(QFrame())
+layout.addLayout(row1)
 
-middle_layout.addWidget(system_status_frame)
-middle_layout.addWidget(QFrame())  # распорка
+# квадраты
+grid = QGridLayout()
 
-frame_layout.addLayout(middle_layout)
+red = QFrame()
+red.setFixedSize(100, 100)
+red.setStyleSheet("background-color: red")
 
-# --- Цветные квадраты: распорки между ними растягиваются поровну ---
-def make_square(color):
-    square = QFrame()
-    square.setFixedSize(100, 100)
-    square.setStyleSheet(f"background-color: {color}")
-    return square
+blue = QFrame()
+blue.setFixedSize(100, 100)
+blue.setStyleSheet("background-color: blue")
 
-squares_layout = QHBoxLayout()
-squares_layout.addWidget(QFrame())
-squares_layout.addWidget(make_square("red"))
-squares_layout.addWidget(QFrame())
-squares_layout.addWidget(make_square("blue"))
-squares_layout.addWidget(QFrame())
-squares_layout.addWidget(make_square("green"))
-squares_layout.addWidget(QFrame())
+green = QFrame()
+green.setFixedSize(100, 100)
+green.setStyleSheet("background-color: green")
 
-frame_layout.addLayout(squares_layout)
+grid.addWidget(red, 0, 0)
+grid.addWidget(blue, 0, 1)
+grid.addWidget(green, 0, 2)
+layout.addLayout(grid)
 
-# --- Белая полоса слева + распорка справа ---
-bottom_layout = QHBoxLayout()
+# нижняя панель
+row3 = QHBoxLayout()
+menu = QFrame()
+menu.setFixedSize(500, 80)
+menu.setStyleSheet("background-color: white")
 
-bottom_frame = QFrame()
-bottom_frame.setStyleSheet("background-color: white")
-bottom_frame.setFixedSize(500, 80)
+menu_grid = QGridLayout(menu)
 
-bottom_text_label = QLabel("ENGINE        RADAR        NAVIGATION", parent=bottom_frame)
-bottom_text_label.setStyleSheet("color: black; font-size: 22px;")   
+engine = QLabel("ENGINE")
+engine.setStyleSheet("color: black; font-size: 22px;")
 
-bottom_layout.addWidget(bottom_frame)
-bottom_layout.addWidget(QFrame())  # распорка
+radar = QLabel("RADAR")
+radar.setStyleSheet("color: black; font-size: 22px;")
 
-frame_layout.addLayout(bottom_layout)
+navigation = QLabel("NAVIGATION")
+navigation.setStyleSheet("color: black; font-size: 22px;")
+
+menu_grid.addWidget(engine, 0, 0)
+menu_grid.addWidget(radar, 0, 1)
+menu_grid.addWidget(navigation, 0, 2)
+
+row3.addWidget(menu)
+row3.addWidget(QFrame())
+layout.addLayout(row3)
